@@ -1,0 +1,15 @@
+{
+  "name": "sdft_wss",
+  "version": "0.9.0",
+  "description": "websocket server for SDFT_CORDOVA_APP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "jkga",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "socket.io": "^2.0.3"
+  }
+}
