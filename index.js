@@ -7,12 +7,29 @@ const express=require('express');
 //other config
 const basketSpooler=require('./spooler/basketSpooler');
 const clientSpooler=require('./spooler/clientSpooler');
-const PORT=8082;
+const PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080
+const IP = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 //bind websocket to http server (this is required)
 var app=express();
 var httpServer=http.Server(app);
 var io=require('socket.io')(httpServer);
+
+
+/*------------------------------------------------
+| Allow CORS
+| https://github.com/socketio/socket.io-client/issues/641
+|-------------------------------------------------*/
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+    next();
+});
+
+
+
 
 
 var clients={};
@@ -288,7 +305,7 @@ io.on('connection', function(socket){
 
 
 
-httpServer.listen(PORT,function(){
+httpServer.listen(PORT,IP,function(){
 	console.log('----------------------------------------');
 	console.log('\u{26AB} listening on port : '+PORT)
 	console.log('----------------------------------------');
