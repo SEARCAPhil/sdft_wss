@@ -7,8 +7,7 @@ const express=require('express');
 //other config
 const basketSpooler=require('./spooler/basketSpooler');
 const clientSpooler=require('./spooler/clientSpooler');
-const PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080
-const IP = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+const PORT = 65080;
 
 //bind websocket to http server (this is required)
 var app=express();
@@ -92,6 +91,8 @@ io.on('connection', function(socket){
 		//save socket token
 		user_data.socket.token=__socket_token;
 
+		//prevent unauthenticated users
+		if(!user_data.details) return 0
 
 
 		/*------------------------
@@ -157,9 +158,13 @@ io.on('connection', function(socket){
 		var __socket_uid_details=clientSpooler.view(clients,__socket_uid);
 
 
+
 		/*-------------------------
 	  	| NEW BASKET
-	  	|-------------------------*/
+	  	|-------------------------
+	  	| NOTES: NEWLY INCLUDED COLLOBARATOR COULD NOT RECEIVED NOTIF
+	  	| THIS IS A BUG TO BE RESOLVED
+	  	|--------------------------*/
 		if(typeof baskets[__basket_id]=='undefined'){
 
 			if(basketSpooler.create(baskets,__basket_id)){
@@ -305,7 +310,7 @@ io.on('connection', function(socket){
 
 
 
-httpServer.listen(PORT,IP,function(){
+httpServer.listen(PORT,function(){
 	console.log('----------------------------------------');
 	console.log('\u{26AB} listening on port : '+PORT)
 	console.log('----------------------------------------');
